@@ -1,0 +1,4 @@
+rootProject.name = 'stootistics'
+
+include "micronaut-backend"
+include "vue-frontend"

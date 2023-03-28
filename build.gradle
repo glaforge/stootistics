@@ -1,0 +1,35 @@
+
+plugins {
+    id "com.github.node-gradle.node" version "3.5.1"
+}
+
+
+node {
+    download = true
+    version = "18.15.0"
+    distBaseUrl = "https://nodejs.org/dist"
+    npmInstallCommand = "install"
+    workDir = file("${project.projectDir}/.gradle/nodejs")
+    npmWorkDir = file("${project.projectDir}/.gradle/npm")
+    nodeProjectDir = file("${project.projectDir}/vue-frontend")
+}
+
+task npmRunBuild(type: NpxTask) {
+    dependsOn 'npmInstall'
+    command = 'npm'
+    args = ['run', 'build']
+}
+
+task copyFrontIntoBack() {
+    dependsOn 'npmRunBuild'
+    doFirst {
+        copy {
+            from "vue-frontend/dist"
+            into "${project(':micronaut-backend').buildDir}/resources/main/public"
+        }
+    }
+}
+
+task assembleFrontAndBack {
+    dependsOn 'npmRunBuild', 'copyFrontIntoBack', ':micronaut-backend:shadowJar'
+}

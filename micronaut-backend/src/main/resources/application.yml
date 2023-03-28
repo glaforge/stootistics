@@ -1,0 +1,26 @@
+micronaut:
+  application:
+    name: stootistics
+  router:
+    static-resources:
+      default:
+        paths: classpath:public
+        mapping: /**
+        enabled: true
+#  http:
+#    client:
+#      read-timeout: 60s
+#      num-of-threads: 80
+#      pool:
+#        acquire-timeout: 60s
+#        max-connections: 80
+#        max-pending-acquires: 80
+#      connect-timeout: 60s
+netty:
+  default:
+    allocator:
+      max-order: 3
+#  event-loops:
+#    default:
+#      num-threads: 80
+#      prefer-native-transport: true

@@ -1,0 +1,94 @@
+
+:root {
+    --bordeaux: #817;
+    --red: #a35;
+    --pink: #c66;
+    --orange: #e94;
+    --yellow: #ed0;
+    --applegreen: #9d5;
+    --emeraldgreen: #4d8;
+    --cyan: #0bc;
+    --lightblue: #09c;
+    --darkblue: #36b;
+    --violet: #639;
+    --lightgray: #EEE;
+
+    --text-multiplier: 1;
+
+    --size-biggest: 1.9rem;
+    --size-bigger: 1.8rem;
+    --size-big: 1.3rem;
+    --size-normal: 1.1rem;
+}
+
+@media (min-width: 48rem) {
+    :root {
+        --text-multiplier: 1.1;
+    }
+}
+@media (min-width: 64rem) {
+    :root {
+        --text-multiplier: 1.2;
+    }
+}
+@media (min-width: 80rem) {
+    :root {
+        --text-multiplier: 1.3;
+    }
+}
+
+html {
+    font-size: 100%;
+    font-family: "PT Sans", "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    width: 100%;
+    margin: 0;
+}
+
+main {
+    max-width: 80ch;
+    padding: 1rem 1rem;
+    margin: auto;
+    line-height: 1.5;
+    font-size: calc(var(--text-multiplier) * var(--size-normal));
+}
+
+h1, h2, h3, h4, h5 {
+    margin: 1rem 0 1rem;
+    color: var(--darkblue);
+}
+
+h1, h1 > a, h1 > a:visited {
+    font-size: calc(var(--text-multiplier) * var(--size-bigger));
+    color: var(--darkblue);
+    text-decoration: none;
+}
+
+h1 {
+    margin-top: 0.5em;
+}
+
+h2 {
+    font-size: calc(var(--text-multiplier) * var(--size-big));
+}
+
+h3 {
+    color: black;
+    font-size: calc(var(--text-multiplier) * var(--size-normal));
+}
+
+p, ul, ol, div {
+    margin-bottom: 0.5rem;
+    font-family: 'PT Sans', sans-serif;
+}
+
+a {
+    color: var(--darkblue);
+}
+
+a:visited {
+    color: var(--bordeaux);
+}
+
