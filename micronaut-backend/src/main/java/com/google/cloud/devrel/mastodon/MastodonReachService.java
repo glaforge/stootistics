@@ -8,7 +8,6 @@ import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.uri.UriBuilder;
-import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 
 import java.net.URI;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 @Singleton
 public class MastodonReachService {
 
-    @Inject
     private final HttpClient client;
 
     public MastodonReachService(HttpClient clientFoAccounts) {
@@ -51,7 +49,7 @@ public class MastodonReachService {
                 .of("/api/v1/accounts/{id}/statuses")
                 .scheme("https")
                 .host(accountServer.server())
-                .queryParam("limit", 10)    // TODO: check why it fails for some bigger lists
+                .queryParam("limit", 50)    // TODO: check why it fails for some bigger lists
                 .queryParam("exclude_replies", true)
                 .queryParam("exclude_reblogs", true)
                 .expand(Map.of("id", accountDetails.id()));
