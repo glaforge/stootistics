@@ -42,13 +42,15 @@ sl-tooltip div ul {
 }
 
 .tootCard {
-  /*
-  */
   box-shadow: 0.25rem 0.25rem 1rem lightgray;
   border: 1px solid gray;
   border-radius: 1rem;
   padding: 1rem;
   margin-bottom: 2rem;
+}
+
+.tootCard .content {
+  text-overflow: ellipsis;
 }
 
 sl-button {

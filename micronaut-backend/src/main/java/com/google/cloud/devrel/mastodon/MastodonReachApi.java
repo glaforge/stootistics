@@ -26,19 +26,21 @@ public class MastodonReachApi {
     @Produces("application/json")
     public Flux<StatusReach> index(@Body AccountServer accountServer) {
         return reachService.getAccountDetails(accountServer)
-                .flatMapMany(accountDetails ->
-                        reachService.getStatuses(accountDetails, accountServer)
-                                .flatMap(status -> reachService.getRebloggingAccounts(status, accountServer)
-                                        .collectList().map(rebloggingAccounts -> {
-                                                    int reblogs = rebloggingAccounts.stream()
-                                                            .map(AccountDetails::followersCount)
-                                                            .reduce(0, Integer::sum);
-                                                    var rebloggedBy = rebloggingAccounts.stream()
-                                                            .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
-                                                            .collect(Collectors.toList());
-                                                    return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
-                                                }
-                                        ))
-                );
+            .flatMapMany(accountDetails ->
+                reachService.getStatuses(accountDetails, accountServer)
+                    .flatMap(status -> reachService.getRebloggingAccounts(status, accountServer)
+                        .collectList().map(rebloggingAccounts -> {
+                                int reblogs = rebloggingAccounts.stream()
+                                    .map(AccountDetails::followersCount)
+                                    .reduce(0, Integer::sum);
+
+                                var rebloggedBy = rebloggingAccounts.stream()
+                                    .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
+                                    .collect(Collectors.toList());
+
+                                return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
+                            }
+                        ))
+            );
     }
 }

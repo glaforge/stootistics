@@ -77,8 +77,6 @@ public class MastodonReachService {
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .contentType(MediaType.APPLICATION_JSON_TYPE);
 
-        Flux<AccountDetails> allAccountDetails = client.jsonStream(request, Argument.of(AccountDetails.class));
-
-        return allAccountDetails;
+        return client.jsonStream(request, Argument.of(AccountDetails.class));
     }
 }

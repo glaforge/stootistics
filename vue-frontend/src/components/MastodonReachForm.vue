@@ -1,7 +1,4 @@
 <template>
-
-  <h1>{{ title }}</h1>
-
   <div class="line">
     <sl-input id="accountInput" maxlength="255" clearable label="Mastodon account"
               placeholder="Ex: @glaforge@uwyn.net" pattern="@(\w+)@(\w+\.)+(\w{2,})"
@@ -28,15 +25,9 @@
 import { ref, reactive } from 'vue';
 import MastodonReachResult from "@/components/MastodonReachResult.vue";
 
-defineProps({
-  title: String,
-})
-
 const mastodonAccount = ref("@glaforge@uwyn.net");
 const toots = ref([]);
 const errorInformation = reactive({message: ""});
-
-
 
 async function calculate () {
   const alertToast = document.getElementById("errorAlert");

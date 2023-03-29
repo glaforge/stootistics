@@ -24,12 +24,20 @@ The Vue.js frontend will proxy calls to the Micronaut backend service.
 In the `micronaut-backend` directory:
 
 ```bash
-./gradlew assembleFrontAndBack
+./gradlew run
 ```
 
 # Building the standalone JAR
 
 In the `micronaut-backend` directory:
+
+```bash
+./gradlew shadowJar
+```
+
+## Assemble the front and the backend
+
+In project base directory:
 
 ```bash
 ./gradlew assembleFrontAndBack

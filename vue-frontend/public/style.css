@@ -92,3 +92,12 @@ a:visited {
     color: var(--bordeaux);
 }
 
+.explanation {
+    background-color: rgba(51, 102, 187, 0.1);
+    box-shadow: 0.25rem 0.25rem 1rem lightgray;
+    border: 1px solid var(--darkblue);
+    border-radius: 1rem;
+    padding: 1rem;
+    padding-left: 2rem;
+    margin-bottom: 2rem;
+}

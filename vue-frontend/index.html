@@ -12,6 +12,18 @@
 </head>
 <body>
 <main class="container">
+    <h1>Mastodon Potential Reach</h1>
+    <div class="explanation">
+        <p>
+        As there's no analytics on Mastodon, let's compute the potential reach
+        your posts can get, by following the formula below, as explained in this
+        <a href="https://glaforge.dev/posts/2023/01/06/calculating-your-potential-reach-on-mastodon-with-google-cloud-workflows-orchestrating-the-mastodon-apis/">article</a>:
+    </p>
+        <pre><code>   potential_reach =
+        me.followers_count +
+        ∑ ( boosters[i].followers_count )</code></pre>
+    </div>
+
     <div id="app"></div>
 </main>
 
