@@ -1,30 +1,30 @@
 package com.google.cloud.devrel.mastodon;
 
+import java.net.URI;
+import java.util.Map;
+
 import com.google.cloud.devrel.mastodon.model.AccountDetails;
 import com.google.cloud.devrel.mastodon.model.AccountServer;
 import com.google.cloud.devrel.mastodon.model.Status;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
-import io.micronaut.http.client.HttpClient;
 import io.micronaut.http.uri.UriBuilder;
+import io.micronaut.reactor.http.client.ReactorStreamingHttpClient;
 import jakarta.inject.Singleton;
-
-import java.net.URI;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @Singleton
 public class MastodonReachService {
 
-    private final HttpClient client;
+    private final ReactorStreamingHttpClient client;
 
-    public MastodonReachService(HttpClient clientFoAccounts) {
+    public MastodonReachService(ReactorStreamingHttpClient clientFoAccounts) {
         this.client = clientFoAccounts;
     }
 
-    public AccountDetails getAccountDetails(AccountServer accountServer) {
+    public Mono<AccountDetails> getAccountDetails(AccountServer accountServer) {
         System.out.println("Get account details for " + accountServer.account());
 
         URI uri = UriBuilder
@@ -34,15 +34,15 @@ public class MastodonReachService {
                 .queryParam("acct", accountServer.account())
                 .build();
 
-        HttpRequest request = HttpRequest
+        HttpRequest<?> request = HttpRequest
                 .GET(uri)
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .contentType(MediaType.APPLICATION_JSON_TYPE);
 
-        return client.toBlocking().retrieve(request, AccountDetails.class);
+        return client.retrieve(request, AccountDetails.class).single();
     }
 
-    public List<Status> getStatuses(AccountDetails accountDetails, AccountServer accountServer) {
+    public Flux<Status> getStatuses(AccountDetails accountDetails, AccountServer accountServer) {
         System.out.println("Retrieving statuses");
 
         URI uri = UriBuilder
@@ -54,15 +54,15 @@ public class MastodonReachService {
                 .queryParam("exclude_reblogs", true)
                 .expand(Map.of("id", accountDetails.id()));
 
-        HttpRequest request = HttpRequest
+        HttpRequest<?> request = HttpRequest
                 .GET(uri)
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .contentType(MediaType.APPLICATION_JSON_TYPE);
 
-        return client.toBlocking().retrieve(request, Argument.listOf(Status.class));
+        return client.jsonStream(request, Argument.of(Status.class));
     }
 
-    public List<AccountDetails> getRebloggingAccounts(Status status, AccountServer accountServer) {
+    public Flux<AccountDetails> getRebloggingAccounts(Status status, AccountServer accountServer) {
         System.out.println("Get reach for status " + status.id());
 
         URI uri = UriBuilder
@@ -72,13 +72,13 @@ public class MastodonReachService {
                 .queryParam("limit", 80)    // TODO: implement pagination
                 .expand(Map.of("statusId", status.id()));
 
-        HttpRequest request = HttpRequest
+        HttpRequest<?> request = HttpRequest
                 .GET(uri)
                 .accept(MediaType.APPLICATION_JSON_TYPE)
                 .contentType(MediaType.APPLICATION_JSON_TYPE);
 
-        List<AccountDetails> allAccountDetails = client.toBlocking().retrieve(request, Argument.listOf(AccountDetails.class));
-        System.out.println(status.id() + " reblogged by " + allAccountDetails.stream().map(accountDetails -> accountDetails.account()).collect(Collectors.toList()));
+        Flux<AccountDetails> allAccountDetails = client.jsonStream(request, Argument.of(AccountDetails.class));
+//        System.out.println(status.id() + " reblogged by " + allAccountDetails.stream().map(accountDetails -> accountDetails.account()).collect(Collectors.toList()));
 
         return allAccountDetails;
     }
