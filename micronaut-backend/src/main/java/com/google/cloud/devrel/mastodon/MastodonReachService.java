@@ -49,7 +49,7 @@ public class MastodonReachService {
                 .of("/api/v1/accounts/{id}/statuses")
                 .scheme("https")
                 .host(accountServer.server())
-                .queryParam("limit", 50)    // TODO: check why it fails for some bigger lists
+                .queryParam("limit", 80)    // TODO: implement pagination
                 .queryParam("exclude_replies", true)
                 .queryParam("exclude_reblogs", true)
                 .expand(Map.of("id", accountDetails.id()));
@@ -78,7 +78,6 @@ public class MastodonReachService {
                 .contentType(MediaType.APPLICATION_JSON_TYPE);
 
         Flux<AccountDetails> allAccountDetails = client.jsonStream(request, Argument.of(AccountDetails.class));
-//        System.out.println(status.id() + " reblogged by " + allAccountDetails.stream().map(accountDetails -> accountDetails.account()).collect(Collectors.toList()));
 
         return allAccountDetails;
     }

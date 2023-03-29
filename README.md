@@ -4,7 +4,13 @@ Run both the frontend Vue.js application and the Micronaut backend in two termin
 
 ## Run the Vue.js frontend
 
-In the `vue-frontend` directory:
+In the `vue-frontend` directory, to install the dependencies:
+
+```bash
+npm install
+```
+
+Then to run the frontend local server:
 
 ```bash
 npm run dev
