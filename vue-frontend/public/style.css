@@ -82,6 +82,7 @@ h3 {
 
 p, ul, ol, div {
     margin-bottom: 0.5rem;
+    margin-top: 0;
     font-family: 'PT Sans', sans-serif;
 }
 
@@ -100,5 +101,6 @@ a:visited {
     border-radius: 1rem;
     padding: 1rem;
     padding-left: 2rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
+    margin-top: 0;
 }

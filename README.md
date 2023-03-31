@@ -80,7 +80,7 @@ docker push eu.gcr.io/stootistics/micronaut-backend
 ## Service deployment
 
 ```bash
-gcloud run deploy stootistics --image gcr.io/stootistics/micronaut-backend --allow-unauthenticated
+gcloud run deploy stootistics --image eu.gcr.io/stootistics/micronaut-backend --allow-unauthenticated
 ```
 
 # Miscellaneous
