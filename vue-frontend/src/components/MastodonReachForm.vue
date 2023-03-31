@@ -63,7 +63,7 @@ async function calculate () {
       } else {
         const reachResult = await reachResponse.json();
         console.log("Reach calculation", reachResult);
-        toots.value = reachResult;
+        toots.value = reachResult.sort((a, b) => b.reblogged - a.reblogged);
       }
     } catch (e) {
       calculateBtn.loading = false;

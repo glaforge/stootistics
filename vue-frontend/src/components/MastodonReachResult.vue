@@ -1,26 +1,35 @@
 <template>
 
   <div class="tootCard">
+    <div class="tags">
+      <span>
 
-    <sl-tooltip>
-      <div slot="content">
-        <ul>
-          <li v-for="reb in toot?.rebloggedBy">{{ reb }}</li>
-        </ul>
-      </div>
-      <sl-tag variant="primary" size="large" pill>
-        <sl-icon name="recycle" slot="prefix"></sl-icon>
-        <strong>{{ toot.reblogged + toot.followersCount}} reached</strong> &nbsp;
-        <span v-if="toot.reblogged > 0">
-          with <strong>{{ toot.rebloggedBy?.length }} reboosts</strong> &nbsp;
-          <em>(+{{ toot.reblogged }})</em>
-        </span>
+      <sl-tooltip>
+        <div slot="content">
+          <ul>
+            <li v-for="reb in toot?.rebloggedBy">{{ reb }}</li>
+          </ul>
+        </div>
+        <sl-tag variant="primary" size="large" pill>
+          <sl-icon name="recycle"></sl-icon> &nbsp;
+          <strong>{{ toot.reblogged + toot.followersCount}} reached</strong> &nbsp;
+          <span v-if="toot.reblogged > 0">
+            with <strong>{{ toot.rebloggedBy?.length }} reboosts</strong> &nbsp;
+            <em>(+{{ toot.reblogged }})</em>
+          </span>
+        </sl-tag>
+      </sl-tooltip>
+      <sl-tag variant="success" size="large" pill v-if="toot.favorites > 0">
+        <sl-icon name="star"></sl-icon> &nbsp;
+        <strong>{{ toot.favorites }} favorites</strong>
       </sl-tag>
-    </sl-tooltip>
-    <sl-tag variant="success" size="large" pill v-if="toot.favorites > 0">
-      <sl-icon name="star" slot="prefix"></sl-icon>
-      <strong>{{ toot.favorites }} favorites</strong>
-    </sl-tag>
+      </span>
+        <sl-tag variant="text" size="large">
+            <sl-icon name="calendar"></sl-icon> &nbsp;
+            {{ new Date(toot.status.created_at).toDateString() }}
+        </sl-tag>
+    </div>
+
     <div class="link">
       <sl-icon name="link" slot="prefix"></sl-icon> &nbsp;
       <a :href="toot.status.url" target="_blank">
@@ -32,7 +41,7 @@
 </template>
 
 <script setup>
-defineProps(['toot'])
+  defineProps(['toot'])
 </script>
 
 <style scoped>
@@ -41,7 +50,13 @@ sl-tooltip div ul {
   padding: 0;
 }
 
+.tags {
+    display: flex;
+    justify-content: space-between;
+}
+
 .tootCard {
+  background-color: white;
   box-shadow: 0.25rem 0.25rem 1rem lightgray;
   border: 1px solid gray;
   border-radius: 1rem;

@@ -48,7 +48,7 @@ In project base directory:
 In project base directory:
 
 ```bash
-docker build . --tag gcr.io/stootistics/micronaut-backend --platform linux/amd64
+docker build . --tag eu.gcr.io/stootistics/micronaut-backend --platform linux/amd64
 ```
 
 ## Run the built container locally
@@ -56,7 +56,7 @@ docker build . --tag gcr.io/stootistics/micronaut-backend --platform linux/amd64
 In project base directory:
 
 ```bash
-docker run -it --rm -p8080:8080 gcr.io/stootistics/micronaut-backend
+docker run -it --rm -p8080:8080 eu.gcr.io/stootistics/micronaut-backend
 ```
 
 # Deploy to Cloud Run
@@ -74,7 +74,7 @@ gcloud components install docker-credential-gcr
 ## Pushing the container to the registry
 
 ```bash
-docker push gcr.io/stootistics/micronaut-backend
+docker push eu.gcr.io/stootistics/micronaut-backend
 ```
 
 ## Service deployment

@@ -3,7 +3,7 @@ import MastodonReachForm from './components/MastodonReachForm.vue';
 </script>
 
 <template>
-  <MastodonReachForm title="Mastodon Reach" />
+  <MastodonReachForm/>
 
 </template>
 
