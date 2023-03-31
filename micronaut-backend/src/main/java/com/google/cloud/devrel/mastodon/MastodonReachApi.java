@@ -1,10 +1,13 @@
 package com.google.cloud.devrel.mastodon;
 
 import com.google.cloud.devrel.mastodon.model.*;
+import com.google.cloud.devrel.mastodon.model.Status;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
+import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller("/api/reach")
@@ -24,19 +27,7 @@ public class MastodonReachApi {
         return reachService.getAccountDetails(accountServer)
             .flatMapMany(accountDetails ->
                 reachService.getStatuses(accountDetails, accountServer)
-                    .flatMap(status -> reachService.getRebloggingAccounts(status, accountServer)
-                        .collectList().map(rebloggingAccounts -> {
-                                int reblogs = rebloggingAccounts.stream()
-                                    .map(AccountDetails::followersCount)
-                                    .reduce(0, Integer::sum);
-
-                                var rebloggedBy = rebloggingAccounts.stream()
-                                    .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
-                                    .collect(Collectors.toList());
-
-                                return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
-                            }
-                        ))
+                    .flatMap(fetchStatusesAndReblogs(accountServer, accountDetails))
             );
     }
 
@@ -49,19 +40,23 @@ public class MastodonReachApi {
         return reachService.getAccountDetails(accountServer)
             .flatMapMany(accountDetails ->
                 reachService.getStatus(accountDetails, accountServer, tootUrl.tootID())
-                    .flatMap(status -> reachService.getRebloggingAccounts(status, accountServer)
-                        .collectList().map(rebloggingAccounts -> {
-                                int reblogs = rebloggingAccounts.stream()
-                                    .map(AccountDetails::followersCount)
-                                    .reduce(0, Integer::sum);
+                    .flatMap(fetchStatusesAndReblogs(accountServer, accountDetails))
+            );
+    }
 
-                                var rebloggedBy = rebloggingAccounts.stream()
-                                    .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
-                                    .collect(Collectors.toList());
+    private Function<Status, Publisher<StatusReach>> fetchStatusesAndReblogs(AccountServer accountServer, AccountDetails accountDetails) {
+        return status -> reachService.getRebloggingAccounts(status, accountServer)
+            .collectList().map(rebloggingAccounts -> {
+                    int reblogs = rebloggingAccounts.stream()
+                        .map(AccountDetails::followersCount)
+                        .reduce(0, Integer::sum);
 
-                                return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
-                            }
-                        ))
+                    var rebloggedBy = rebloggingAccounts.stream()
+                        .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
+                        .collect(Collectors.toList());
+
+                    return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
+                }
             );
     }
 }

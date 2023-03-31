@@ -52,7 +52,12 @@ sl-tooltip div ul {
 
 .tags {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+}
+
+.tags sl-tag {
+    margin-bottom: 0.5rem;
 }
 
 .tootCard {
