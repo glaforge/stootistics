@@ -83,6 +83,15 @@ docker push eu.gcr.io/stootistics/micronaut-backend
 gcloud run deploy stootistics --image eu.gcr.io/stootistics/micronaut-backend --allow-unauthenticated
 ```
 
+# Overall deployment process
+
+```bash
+./gradlew assembleFrontAndBack && \
+docker build . --tag eu.gcr.io/stootistics/micronaut-backend --platform linux/amd64 && \
+docker push eu.gcr.io/stootistics/micronaut-backend && \
+gcloud run deploy stootistics --image eu.gcr.io/stootistics/micronaut-backend --allow-unauthenticated
+```
+
 # Miscellaneous
 
 This project is not an official Google project.

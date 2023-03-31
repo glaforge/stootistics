@@ -61,6 +61,28 @@ public class MastodonReachService {
 
         return client.jsonStream(request, Argument.of(Status.class));
     }
+    public Flux<Status> getStatus(AccountDetails accountDetails, AccountServer accountServer, String tootId) {
+        System.out.println("Retrieving single status");
+
+        URI uri = UriBuilder
+                .of("/api/v1/statuses/{tootId}")
+                .scheme("https")
+                .host(accountServer.server())
+                .queryParam("limit", 80)    // TODO: implement pagination
+                .queryParam("exclude_replies", true)
+                .queryParam("exclude_reblogs", true)
+                .expand(Map.of(
+                        "accountId", accountDetails.id(),
+                        "tootId", tootId
+                ));
+
+        HttpRequest<?> request = HttpRequest
+                .GET(uri)
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .contentType(MediaType.APPLICATION_JSON_TYPE);
+
+        return client.retrieve(request, Argument.of(Status.class));
+    }
 
     public Flux<AccountDetails> getRebloggingAccounts(Status status, AccountServer accountServer) {
         System.out.println("Get reach for status " + status.id());
