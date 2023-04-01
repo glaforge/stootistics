@@ -9,10 +9,12 @@
           <sl-icon-button name="x-circle-fill" @click="toggleHelp" style="float: right; margin-left: 1rem; font-size: 16px" >
           </sl-icon-button>
           As there's no analytics on Mastodon, let's compute the potential reach
-          your posts can get, by following the formula below, as explained in this
-          <a href="https://glaforge.dev/posts/2023/01/06/calculating-your-potential-reach-on-mastodon-with-google-cloud-workflows-orchestrating-the-mastodon-apis/">article</a>:
+          of your <em>toots</em>, by calculating the formula below (see
+          <sl-icon name="file-text"/>&nbsp;<a href="https://glaforge.dev/posts/2023/01/06/calculating-your-potential-reach-on-mastodon-with-google-cloud-workflows-orchestrating-the-mastodon-apis/">article</a>
+          for more information, and
+          <sl-icon name="github"/>&nbsp;<a href="https://github.com/glaforge/stootistics">code</a> on Github).
       </p>
-      <pre><code>potential_reach = <br>   me.followers_count + <br>   ∑ ( boosters[i].followers_count )</code></pre>
+      <pre><code>potential_reach = <br> me.followers_count + <br> ∑(boosters[i].followers_count)</code></pre>
   </div>
 
   <sl-tab-group>

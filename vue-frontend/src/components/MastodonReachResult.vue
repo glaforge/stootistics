@@ -11,7 +11,7 @@
           </ul>
         </div>
         <sl-tag variant="primary" size="large" pill>
-          <sl-icon name="recycle"></sl-icon> &nbsp;
+          <sl-icon name="recycle"/> &nbsp;
           <strong>{{ toot.reblogged + toot.followersCount}} reached</strong> &nbsp;
           <span v-if="toot.reblogged > 0">
             with <strong>{{ toot.rebloggedBy?.length }} reboosts</strong> &nbsp;
@@ -20,18 +20,18 @@
         </sl-tag>
       </sl-tooltip>
       <sl-tag variant="success" size="large" pill v-if="toot.favorites > 0">
-        <sl-icon name="star"></sl-icon> &nbsp;
+        <sl-icon name="star"/> &nbsp;
         <strong>{{ toot.favorites }} favorites</strong>
       </sl-tag>
       </span>
         <sl-tag variant="text" size="large">
-            <sl-icon name="calendar"></sl-icon> &nbsp;
+            <sl-icon name="calendar"/> &nbsp;
             {{ new Date(toot.status.created_at).toDateString() }}
         </sl-tag>
     </div>
 
     <div class="link">
-      <sl-icon name="link" slot="prefix"></sl-icon> &nbsp;
+      <sl-icon name="link" slot="prefix"/>
       <a :href="toot.status.url" target="_blank">
         {{ toot.status.url.substring(8) }}
       </a>
@@ -82,6 +82,16 @@ sl-button {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.link a {
+    font-size: smaller;
+}
+
+.link sl-icon {
+    position: relative;
+    top: 7px;
+    margin-right: 7px;
 }
 
 .content {
