@@ -4,7 +4,6 @@ import MastodonReachForm from './components/MastodonReachForm.vue';
 
 <template>
   <MastodonReachForm/>
-
 </template>
 
 <style scoped>

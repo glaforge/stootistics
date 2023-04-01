@@ -1,4 +1,19 @@
 <template>
+  <h1>
+      Mastodon Potential Reach
+      <sl-icon-button name="question-circle-fill" @click="toggleHelp" style="position: relative; top: -10px; font-size: 18px" >
+      </sl-icon-button>
+  </h1>
+  <div class="explanation" id="explanationNode" v-if="helpActive">
+      <p>
+          <sl-icon-button name="x-circle-fill" @click="toggleHelp" style="float: right; margin-left: 1rem; font-size: 16px" >
+          </sl-icon-button>
+          As there's no analytics on Mastodon, let's compute the potential reach
+          your posts can get, by following the formula below, as explained in this
+          <a href="https://glaforge.dev/posts/2023/01/06/calculating-your-potential-reach-on-mastodon-with-google-cloud-workflows-orchestrating-the-mastodon-apis/">article</a>:
+      </p>
+      <pre><code>potential_reach = <br>   me.followers_count + <br>   ∑ ( boosters[i].followers_count )</code></pre>
+  </div>
 
   <sl-tab-group>
     <sl-tab slot="nav" panel="most-popular"
@@ -51,7 +66,9 @@ import MastodonReachResult from "@/components/MastodonReachResult.vue";
 
 const mastodonAccount = ref("@glaforge@uwyn.net");
 const tootUrl = ref("https://uwyn.net/@glaforge/110085908005909658")
+
 const accountTabActive = ref(true);
+const helpActive = ref(true);
 
 const toots = ref([]);
 
@@ -59,12 +76,16 @@ const errorInformation = reactive({message: ""});
 
 function switchTab(activateAccount) {
     if (activateAccount) {
-        this.accountTabActive = true;
+        accountTabActive.value = true;
         toots.value = [];
     } else {
-        this.accountTabActive = false;
+        accountTabActive.value = false;
         toots.value = [];
     }
+}
+
+function toggleHelp() {
+    helpActive.value = !helpActive.value;
 }
 
 async function calculate () {
