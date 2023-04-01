@@ -12,11 +12,17 @@
 </head>
 <body>
 <main class="container">
-    <h1>Mastodon Potential Reach</h1>
-    <div class="explanation">
+    <h1>
+        Mastodon Potential Reach
+        <sl-icon-button name="question-circle-fill"
+                        onclick="document.getElementById('explanationNode').style.display = 'block'"
+                        style="position: relative; top: -10px; font-size: 18px" >
+        </sl-icon-button>
+    </h1>
+    <div class="explanation" id="explanationNode">
         <p>
             <sl-icon-button name="x-circle-fill"
-                            onclick="console.log(this.parentNode.parentNode.remove())"
+                            onclick="document.getElementById('explanationNode').style.display = 'none'"
                             style="float: right; margin-left: 1rem; font-size: 16px" >
             </sl-icon-button>
             As there's no analytics on Mastodon, let's compute the potential reach

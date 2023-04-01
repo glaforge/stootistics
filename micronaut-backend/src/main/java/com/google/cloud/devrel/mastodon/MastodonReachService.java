@@ -68,9 +68,6 @@ public class MastodonReachService {
                 .of("/api/v1/statuses/{tootId}")
                 .scheme("https")
                 .host(accountServer.server())
-                .queryParam("limit", 80)    // TODO: implement pagination
-                .queryParam("exclude_replies", true)
-                .queryParam("exclude_reblogs", true)
                 .expand(Map.of(
                         "accountId", accountDetails.id(),
                         "tootId", tootId

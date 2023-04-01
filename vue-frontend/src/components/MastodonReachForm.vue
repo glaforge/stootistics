@@ -2,11 +2,11 @@
 
   <sl-tab-group>
     <sl-tab slot="nav" panel="most-popular"
-            @click="accountTabActive = true">
+            @click="switchTab(true)">
         Account potential reach
     </sl-tab>
     <sl-tab slot="nav" panel="one-toot"
-            @click="accountTabActive = false">
+            @click="switchTab(false)">
         Toot potential reach
     </sl-tab>
 
@@ -56,6 +56,16 @@ const accountTabActive = ref(true);
 const toots = ref([]);
 
 const errorInformation = reactive({message: ""});
+
+function switchTab(activateAccount) {
+    if (activateAccount) {
+        this.accountTabActive = true;
+        toots.value = [];
+    } else {
+        this.accountTabActive = false;
+        toots.value = [];
+    }
+}
 
 async function calculate () {
   const alertToast = document.getElementById("errorAlert");
