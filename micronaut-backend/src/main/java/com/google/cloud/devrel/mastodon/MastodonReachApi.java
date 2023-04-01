@@ -4,10 +4,9 @@ import com.google.cloud.devrel.mastodon.model.*;
 import com.google.cloud.devrel.mastodon.model.Status;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller("/api/reach")
@@ -27,7 +26,7 @@ public class MastodonReachApi {
         return reachService.getAccountDetails(accountServer)
             .flatMapMany(accountDetails ->
                 reachService.getStatuses(accountDetails, accountServer)
-                    .flatMap(fetchStatusesAndReblogs(accountServer, accountDetails))
+                    .flatMap(status -> getStatusReach(accountServer, accountDetails, status))
             );
     }
 
@@ -40,12 +39,12 @@ public class MastodonReachApi {
         return reachService.getAccountDetails(accountServer)
             .flatMapMany(accountDetails ->
                 reachService.getStatus(accountDetails, accountServer, tootUrl.tootID())
-                    .flatMap(fetchStatusesAndReblogs(accountServer, accountDetails))
+                    .flatMap(status -> getStatusReach(accountServer, accountDetails, status))
             );
     }
 
-    private Function<Status, Publisher<StatusReach>> fetchStatusesAndReblogs(AccountServer accountServer, AccountDetails accountDetails) {
-        return status -> reachService.getRebloggingAccounts(status, accountServer)
+    private Mono<StatusReach> getStatusReach(AccountServer accountServer, AccountDetails accountDetails, Status status) {
+        return reachService.getRebloggingAccounts(status, accountServer)
             .collectList().map(rebloggingAccounts -> {
                     int reblogs = rebloggingAccounts.stream()
                         .map(AccountDetails::followersCount)
