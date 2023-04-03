@@ -19,3 +19,6 @@ netty:
   default:
     allocator:
       max-order: 3
+
+mastodon:
+  token: "6WbX-XATK3xQ3PnSWtGR2zjGlGcBMwUP9ZnUMCM9qSQ"

@@ -92,6 +92,20 @@ docker push eu.gcr.io/stootistics/micronaut-backend && \
 gcloud run deploy stootistics --image eu.gcr.io/stootistics/micronaut-backend --allow-unauthenticated
 ```
 
+# Deployment of the Firebase configuration
+
+```bash
+firebase deploy --project stootistics
+```
+
+You'll need to setup Firebase, with
+
+```bash
+firebase login --reauth
+firebase projects:addfirebase stootistics
+firebase init hosting
+```
+
 # Miscellaneous
 
 This project is not an official Google project.
