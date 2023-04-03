@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "rewrites": [ {
+      "source": "/**/*",
+      "run": {
+        "serviceId": "stootistics",
+        "region": "europe-west1"
+      }
+    } ]
+  }
+}
