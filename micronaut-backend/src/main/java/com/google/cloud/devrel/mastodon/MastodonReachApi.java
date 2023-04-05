@@ -22,40 +22,15 @@ public class MastodonReachApi {
     @Post("/")
     @Consumes("application/json")
     @Produces("application/json")
-    public Flux<StatusReach> index(@Body AccountServer accountServer) {
-        return reachService.getAccountDetails(accountServer)
-            .flatMapMany(accountDetails ->
-                reachService.getStatuses(accountDetails, accountServer)
-                    .flatMap(status -> getStatusReach(accountServer, accountDetails, status))
-            );
+    public Flux<StatusReach> accountReach(@Body AccountServer accountServer) {
+        return reachService.getAccountReach(accountServer);
     }
 
     @Post("/toot")
     @Consumes("application/json")
     @Produces("application/json")
-    public Flux<StatusReach> toot(@Body TootUrl tootUrl) {
+    public Flux<StatusReach> tootReach(@Body TootUrl tootUrl) {
         AccountServer accountServer = new AccountServer("@" + tootUrl.user() + "@" + tootUrl.server());
-
-        return reachService.getAccountDetails(accountServer)
-            .flatMapMany(accountDetails ->
-                reachService.getStatus(accountDetails, accountServer, tootUrl.tootID())
-                    .flatMap(status -> getStatusReach(accountServer, accountDetails, status))
-            );
-    }
-
-    private Mono<StatusReach> getStatusReach(AccountServer accountServer, AccountDetails accountDetails, Status status) {
-        return reachService.getRebloggingAccounts(status, accountServer)
-            .collectList().map(rebloggingAccounts -> {
-                    int reblogs = rebloggingAccounts.stream()
-                        .map(AccountDetails::followersCount)
-                        .reduce(0, Integer::sum);
-
-                    var rebloggedBy = rebloggingAccounts.stream()
-                        .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
-                        .collect(Collectors.toList());
-
-                    return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
-                }
-            );
+        return reachService.getTootReach(tootUrl, accountServer);
     }
 }

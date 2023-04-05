@@ -21,4 +21,5 @@ netty:
       max-order: 3
 
 mastodon:
-  token: "6WbX-XATK3xQ3PnSWtGR2zjGlGcBMwUP9ZnUMCM9qSQ"
+  token: "85zFqAKct5jy52JhFzXpzapmhHiR6nRz9f5oX70tNvE"
+  server: "tooters.org"

@@ -2,15 +2,16 @@ package com.google.cloud.devrel.mastodon;
 
 import java.net.URI;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import com.google.cloud.devrel.mastodon.model.AccountDetails;
-import com.google.cloud.devrel.mastodon.model.AccountServer;
-import com.google.cloud.devrel.mastodon.model.Status;
+import com.google.cloud.devrel.mastodon.model.*;
+import io.micronaut.context.annotation.Value;
 import io.micronaut.core.type.Argument;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.MediaType;
 import io.micronaut.http.uri.UriBuilder;
 import io.micronaut.reactor.http.client.ReactorStreamingHttpClient;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -18,11 +19,14 @@ import reactor.core.publisher.Mono;
 @Singleton
 public class MastodonReachService {
 
-    private final ReactorStreamingHttpClient client;
+    @Inject
+    private ReactorStreamingHttpClient client;
 
-    public MastodonReachService(ReactorStreamingHttpClient clientFoAccounts) {
-        this.client = clientFoAccounts;
-    }
+    @Value("${mastodon.server}")
+    private String mastodonServer;
+
+    @Value("${mastodon.token}")
+    private String bearerToken;
 
     public Mono<AccountDetails> getAccountDetails(AccountServer accountServer) {
         System.out.println("Get account details for " + accountServer.account());
@@ -98,4 +102,113 @@ public class MastodonReachService {
 
         return client.jsonStream(request, Argument.of(AccountDetails.class));
     }
+
+    public Flux<StatusReach> getAccountReach(AccountServer accountServer) {
+        return getAccountDetails(accountServer)
+            .flatMapMany(accountDetails ->
+                getStatuses(accountDetails, accountServer)
+                    .flatMap(status -> getStatusReach(accountServer, accountDetails, status))
+            );
+    }
+
+    public Flux<StatusReach> getTootReach(TootUrl tootUrl, AccountServer accountServer) {
+        return getAccountDetails(accountServer)
+            .flatMapMany(accountDetails ->
+                getStatus(accountDetails, accountServer, tootUrl.tootID())
+                    .flatMap(status -> getStatusReach(accountServer, accountDetails, status))
+            );
+    }
+
+    private Mono<StatusReach> getStatusReach(AccountServer accountServer, AccountDetails accountDetails, Status status) {
+        return getRebloggingAccounts(status, accountServer)
+            .collectList().map(rebloggingAccounts -> {
+                    int reblogs = rebloggingAccounts.stream()
+                        .map(AccountDetails::followersCount)
+                        .reduce(0, Integer::sum);
+
+                    var rebloggedBy = rebloggingAccounts.stream()
+                        .map((accDetails) -> accDetails.displayName() + " (" + accDetails.account() + ")")
+                        .collect(Collectors.toList());
+
+                    return new StatusReach(status, reblogs, accountDetails.followersCount(), status.favouriteCount(), rebloggedBy);
+                }
+            );
+    }
+
+    public Flux<Notification> getNotifications() {
+        System.out.println("Check notifications");
+
+        URI uri = UriBuilder
+            .of("/api/v1/notifications")
+            .scheme("https")
+            .host(mastodonServer)
+            .queryParam("types[]", "mention")
+            .build();
+
+        HttpRequest<?> request = HttpRequest
+            .GET(uri)
+            .bearerAuth(bearerToken)
+            .accept(MediaType.APPLICATION_JSON_TYPE)
+            .contentType(MediaType.APPLICATION_JSON_TYPE);
+
+        return client.jsonStream(request, Argument.of(Notification.class));
+    }
+
+    public Flux<String> dismissNotification(String id) {
+        System.out.println("Dismiss notification: " + id);
+
+        URI uri = UriBuilder
+            .of("/api/v1/notifications/{id}/dismiss")
+            .scheme("https")
+            .host(mastodonServer)
+            .expand(Map.of("id", id));
+
+        HttpRequest<?> request = HttpRequest
+            .POST(uri, null)
+            .bearerAuth(bearerToken)
+            .accept(MediaType.APPLICATION_JSON_TYPE)
+            .contentType(MediaType.APPLICATION_JSON_TYPE);
+
+        return client.retrieve(request);
+    }
+
+    public void dismissAllNotifications() {
+        System.out.println("Dismiss ALL notification");
+
+        URI uri = UriBuilder
+            .of("/api/v1/notifications/clear")
+            .scheme("https")
+            .host(mastodonServer)
+            .build();
+
+        HttpRequest<?> request = HttpRequest
+            .POST(uri, null)
+            .bearerAuth(bearerToken)
+            .accept(MediaType.APPLICATION_JSON_TYPE)
+            .contentType(MediaType.APPLICATION_JSON_TYPE);
+
+        client.toBlocking().retrieve(request);
+    }
+
+    public void postReply(String message) {
+        System.out.println("Post reply");
+
+        NewStatus status = new NewStatus(message, "unlisted");
+
+        URI uri = UriBuilder
+            .of("/api/v1/statuses")
+            .scheme("https")
+            .host(mastodonServer)
+            .build();
+
+        HttpRequest<?> request = HttpRequest
+            .POST(uri, status)
+            .bearerAuth(bearerToken)
+            .accept(MediaType.APPLICATION_JSON_TYPE)
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        client.toBlocking().retrieve(request);
+    }
+
+
 }
