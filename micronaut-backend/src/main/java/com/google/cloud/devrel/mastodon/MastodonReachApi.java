@@ -1,13 +1,9 @@
 package com.google.cloud.devrel.mastodon;
 
 import com.google.cloud.devrel.mastodon.model.*;
-import com.google.cloud.devrel.mastodon.model.Status;
 import io.micronaut.http.annotation.*;
 import jakarta.inject.Inject;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.stream.Collectors;
 
 @Controller("/api/reach")
 public class MastodonReachApi {

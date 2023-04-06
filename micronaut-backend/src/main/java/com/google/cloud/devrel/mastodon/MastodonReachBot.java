@@ -18,6 +18,7 @@ public class MastodonReachBot {
     public Flux<StatusReach> replyToNotif() {
         Flux<StatusReach> notificationsForStatusReach = reachService.getNotifications().flatMap(notification -> {
             String accountName = "@" + notification.account().account();
+            System.out.println("Calculating potential reach for: " + accountName);
 
             Mono<StatusReach> maxStatusReach = reachService.getAccountReach(new AccountServer(accountName))
                 .reduce((left, right) -> left.reblogged() > right.reblogged() ? left : right)
@@ -31,19 +32,13 @@ public class MastodonReachBot {
                         messageBuilder.append("It was favorited " + statusReach.favorites() + " times. \n");
                     messageBuilder.append("\n" + statusReach.status().url());
 
-                    String msg = messageBuilder.toString();
-                    System.out.println("message = " + msg);
-
-                    reachService.postReply(msg);
+                    reachService.postReply(messageBuilder.toString());
                     reachService.dismissNotification(notification.id()).subscribe();
 
                     return Mono.just(statusReach);
                 });
-
             return maxStatusReach;
         });
-        //reachService.dismissAllNotifications();
-
         return notificationsForStatusReach;
     }
 

@@ -29,7 +29,7 @@ public class MastodonReachService {
     private String bearerToken;
 
     public Mono<AccountDetails> getAccountDetails(AccountServer accountServer) {
-        System.out.println("Get account details for " + accountServer.account());
+//        System.out.println("Get account details for " + accountServer.account());
 
         URI uri = UriBuilder
                 .of("/api/v1/accounts/lookup")
@@ -47,7 +47,7 @@ public class MastodonReachService {
     }
 
     public Flux<Status> getStatuses(AccountDetails accountDetails, AccountServer accountServer) {
-        System.out.println("Retrieving statuses");
+//        System.out.println("Retrieving statuses for: " + accountServer.account());
 
         URI uri = UriBuilder
                 .of("/api/v1/accounts/{id}/statuses")
@@ -66,7 +66,7 @@ public class MastodonReachService {
         return client.jsonStream(request, Argument.of(Status.class));
     }
     public Flux<Status> getStatus(AccountDetails accountDetails, AccountServer accountServer, String tootId) {
-        System.out.println("Retrieving single status");
+//        System.out.println("Retrieving single status");
 
         URI uri = UriBuilder
                 .of("/api/v1/statuses/{tootId}")
@@ -86,7 +86,7 @@ public class MastodonReachService {
     }
 
     public Flux<AccountDetails> getRebloggingAccounts(Status status, AccountServer accountServer) {
-        System.out.println("Get reach for status " + status.id());
+//        System.out.println("Get reach for status " + status.id());
 
         URI uri = UriBuilder
                 .of("/api/v1/statuses/{statusId}/reblogged_by")
@@ -136,7 +136,7 @@ public class MastodonReachService {
     }
 
     public Flux<Notification> getNotifications() {
-        System.out.println("Check notifications");
+        System.out.println("Checking notifications...");
 
         URI uri = UriBuilder
             .of("/api/v1/notifications")
@@ -155,7 +155,7 @@ public class MastodonReachService {
     }
 
     public Flux<String> dismissNotification(String id) {
-        System.out.println("Dismiss notification: " + id);
+        System.out.println("Dismissing notification: " + id);
 
         URI uri = UriBuilder
             .of("/api/v1/notifications/{id}/dismiss")
@@ -173,7 +173,7 @@ public class MastodonReachService {
     }
 
     public void dismissAllNotifications() {
-        System.out.println("Dismiss ALL notification");
+        System.out.println("Dismissing all notification...");
 
         URI uri = UriBuilder
             .of("/api/v1/notifications/clear")
@@ -191,7 +191,7 @@ public class MastodonReachService {
     }
 
     public void postReply(String message) {
-        System.out.println("Post reply");
+        System.out.println("Posting reply...");
 
         NewStatus status = new NewStatus(message, "unlisted");
 
